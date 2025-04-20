@@ -1,0 +1,41 @@
+# 💡 일반
+node_modules/
+dist/
+.temp/
+.cache/
+*.log
+*.lock
+
+# 💡 타입 캐시
+*.tsbuildinfo
+
+# 💡 에디터 설정
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# 💡 라이브러리 설치 트래킹 해시
+.package-hash
+
+# 💡 환경 변수
+.env
+.env.*.local
+
+# 💡 테스트용 Vite 프로젝트 빌드 파일
+example/polyroll-test/dist/
+example/polyroll-test/node_modules/
+
+# 💡 Husky Hook 파일
+.husky/_
+
+# 💡 yarn berry Plug'n'Play
+.pnp.*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn/patches
+
+# 💡 macOS 특유의 쓸모없는 파일
+__MACOSX/
