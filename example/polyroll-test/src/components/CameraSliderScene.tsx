@@ -102,7 +102,7 @@ function SceneContent({
 
       <mesh ref={meshRef} onClick={handleRollDice}>
         <boxGeometry />
-        <meshStandardMaterial color="orange" />
+        <meshStandardMaterial color="white" />
       </mesh>
     </>
   );

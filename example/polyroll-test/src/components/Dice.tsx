@@ -1,8 +1,16 @@
 import { RigidBody, RapierRigidBody } from '@react-three/rapier';
 import { useRef, useState } from 'react';
+import { RoundedBox } from '@react-three/drei';
 import DiceTextFaces from './DiceTextFaces';
+import { DiceProps } from '../types/diceProps.ts';
 
-export default function Dice() {
+export default function Dice({
+                               radius,
+                               smoothness,
+                               bevelSegments,
+                               creaseAngle,
+                               materialType
+                             }: DiceProps) {
   const diceRef = useRef<RapierRigidBody>(null);
   const [canClick, setCanClick] = useState(true);
 
@@ -30,6 +38,36 @@ export default function Dice() {
     z: Math.random() * range * 2 - range,
   });
 
+  const getMaterialProps = () => {
+    switch (materialType) {
+      case 'glass':
+        return {
+          transmission: 1,
+          thickness: 0.6,
+          roughness: 0,
+          ior: 1.5,
+          reflectivity: 1,
+          metalness: 0,
+          clearcoat: 1,
+        };
+      case 'resin':
+        return {
+          transmission: 0.9,
+          thickness: 0.5,
+          roughness: 0.1,
+          metalness: 0.1,
+          clearcoat: 0.7,
+          reflectivity: 0.4,
+        };
+      case 'solid':
+      default:
+        return {
+          roughness: 0.4,
+          metalness: 0.2,
+        };
+    }
+  };
+
   return (
     <RigidBody
       ref={diceRef}
@@ -46,9 +84,22 @@ export default function Dice() {
       position={[0, 1, 0]}
     >
       <mesh onClick={handleClick} castShadow={true}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="orange" />
-        <DiceTextFaces />
+        <RoundedBox
+          args={[1, 1, 1]}
+          radius={radius}
+          smoothness={smoothness}
+          bevelSegments={bevelSegments}
+          creaseAngle={creaseAngle}
+          castShadow={true}
+          receiveShadow={true}
+        >
+          <meshPhysicalMaterial
+            key={materialType} // 재질 변경
+            color="#ffbb55"
+            {...getMaterialProps()}
+          />
+          <DiceTextFaces />
+        </RoundedBox>
       </mesh>
     </RigidBody>
   );
