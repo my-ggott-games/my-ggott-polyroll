@@ -3,5 +3,8 @@ export interface DiceProps {
   smoothness: number;
   bevelSegments: number;
   creaseAngle: number;
-  materialType: 'solid' | 'glass' | 'resin';
+  materialType: 'solid' | 'glass' | 'fuzzy' | 'resin' | 'toon';
+  color: string;
+  roughness: number;
+  normalScale: number;
 }
