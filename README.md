@@ -30,14 +30,14 @@ Canvas 기반의 렌더링, 물리엔진, 그리고 다양한 주사위 타입 �
 | 이모지 | 타입 | 설명 | 예시 |
 |--------|------|------|------|
 | 🎉 | `init:` | 프로젝트 초기 설정 | `🎉 init: 프로젝트 초기 세팅` |
-| ✨ | `feat:` | 새로운 기능 추가 | `✨ feat: DiceD6 주사위 추가` |
+| ✨ | `feat:` | 새로운 기능 추가 | `✨ feat: DiceScene 주사위 추가` |
 | 🐛 | `fix:` | 버그 수정 | `🐛 fix: Canvas 렌더링 오류 수정` |
 | ♻️ | `refactor:` | 코드 리팩토링 | `♻️ refactor: useDice 훅 리팩토링` |
 | 📄 | `docs:` | 문서 수정 | `📄 docs: README.md 작성` |
 | 🎨 | `style:` | 코드 스타일 변경 | `🎨 style: prettier 포맷 적용` |
-| ✅ | `test:` | 테스트 코드 추가/수정 | `✅ test: DiceD6 테스트 추가` |
+| ✅ | `test:` | 테스트 코드 추가/수정 | `✅ test: DiceScene 테스트 추가` |
 | 🔧 | `chore:` | 설정 변경, 기타 | `🔧 chore: tsconfig 설정 수정` |
-| 🔁 | `revert:` | 이전 커밋 되돌리기 | `🔁 revert: DiceD6 롤백` |
+| 🔁 | `revert:` | 이전 커밋 되돌리기 | `🔁 revert: DiceScene 롤백` |
 
 ---
 

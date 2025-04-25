@@ -2,12 +2,12 @@ import * as THREE from 'three';
 
 export function getTopFaceIndex(mesh: THREE.Mesh): number {
   const faceNormals = [
-    new THREE.Vector3(0, 0, 1),   // front → 1
-    new THREE.Vector3(0, 0, -1),  // back  → 6
-    new THREE.Vector3(1, 0, 0),   // right → 3
-    new THREE.Vector3(-1, 0, 0),  // left  → 4
-    new THREE.Vector3(0, 1, 0),   // top   → 5
-    new THREE.Vector3(0, -1, 0),  // bottom→ 2
+    new THREE.Vector3(0, 0, 1), // front → 1
+    new THREE.Vector3(0, 0, -1), // back  → 6
+    new THREE.Vector3(1, 0, 0), // right → 3
+    new THREE.Vector3(-1, 0, 0), // left  → 4
+    new THREE.Vector3(0, 1, 0), // top   → 5
+    new THREE.Vector3(0, -1, 0), // bottom→ 2
   ];
 
   const worldUp = new THREE.Vector3(0, 1, 0);

@@ -1,5 +1,5 @@
 import { RigidBody, RapierRigidBody } from '@react-three/rapier';
-import { useRef, useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -20,7 +20,6 @@ const faceNormals = [
 function getTopFace(body: RapierRigidBody): number {
   const rotation = body.rotation(); // Quaternion
   const q = new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
-
   const up = new THREE.Vector3(0, 1, 0);
 
   const scores = faceNormals.map(({ value, normal }) => {
@@ -29,32 +28,25 @@ function getTopFace(body: RapierRigidBody): number {
     return { value, dot };
   });
 
-  scores.sort((a, b) => b.dot - a.dot); // 가장 Y 방향과 가까운 normal 을 윗면으로
-
+  scores.sort((a, b) => b.dot - a.dot); // 가장 Y 방향과 가까운 normal을 윗면으로
   return scores[0].value;
 }
 
-export default function Dice({
-                               radius,
-                               smoothness,
-                               bevelSegments,
-                               creaseAngle,
-                               materialType,
-                               color,
-                               roughness,
-                               normalScale
-                             }: DiceProps) {
-  const diceRef = useRef<RapierRigidBody>(null);
+const Dice = forwardRef<RapierRigidBody, DiceProps>(function Dice(
+  { radius, smoothness, bevelSegments, creaseAngle, materialType, color, roughness, normalScale },
+  ref
+) {
   const [canClick, setCanClick] = useState(true);
-
   const noiseTexture = useLoader(THREE.TextureLoader, '/grey-felt-texture.jpg');
   noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
 
+  const localRef = useRef<RapierRigidBody>(null);
+  const diceBody = (ref as React.MutableRefObject<RapierRigidBody | null>) ?? localRef;
 
   const handleClick = () => {
     if (!canClick) return;
 
-    const body = diceRef.current;
+    const body = diceBody.current;
     if (!body) return;
 
     body.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -134,18 +126,15 @@ export default function Dice({
     }
   };
 
-
   return (
     <RigidBody
-      ref={diceRef}
-      onCollisionEnter={() => {
-        setCanClick(false); // 즉시 클릭 비활성화
-      }}
+      ref={diceBody}
+      onCollisionEnter={() => setCanClick(false)}
       onSleep={() => {
-        const body = diceRef.current;
+        const body = diceBody.current;
         if (body) {
           const top = getTopFace(body);
-          console.log('🎲 윗면:', top); // 결과 출력
+          console.log('🎲 윗면:', top);
         }
         setCanClick(true);
       }}
@@ -161,16 +150,11 @@ export default function Dice({
           smoothness={smoothness}
           bevelSegments={bevelSegments}
           creaseAngle={creaseAngle}
-          castShadow={true}
-          receiveShadow={true}
+          castShadow
+          receiveShadow
         >
           {materialType === 'toon' ? (
-            <meshToonMaterial
-              color={color}
-              {...getMaterialProps()}
-              transparent={false}
-              opacity={1}
-            />
+            <meshToonMaterial color={color} {...getMaterialProps()} />
           ) : materialType === 'glass' || materialType === 'resin' ? (
             <meshPhysicalMaterial color={color} {...getMaterialProps()} />
           ) : (
@@ -181,10 +165,12 @@ export default function Dice({
 
         {materialType === 'toon' && (
           <lineSegments geometry={outlineGeometry}>
-            <lineBasicMaterial color="black" depthTest={true} depthWrite={true} />
+            <lineBasicMaterial color="black" depthTest depthWrite />
           </lineSegments>
         )}
       </mesh>
     </RigidBody>
   );
-}
+});
+
+export default Dice;

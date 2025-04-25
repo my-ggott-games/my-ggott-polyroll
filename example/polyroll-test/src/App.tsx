@@ -1,19 +1,17 @@
-import { DiceD6 } from 'my-ggott-polyroll';
-import SampleDiceD6 from './SampleDiceD6'
+import DiceScene from 'my-ggott-polyroll';
 import DiceWithPhysics from './components/DiceWithPhysics.tsx';
-// import './styles/gui.css';
 
 function App() {
   return (
     <div>
-      <h1>🎲 My Ggott Dice</h1>
-      <DiceD6 />
-      <SampleDiceD6 />
+      <DiceScene
+        diceList={[
+          { type: 'd6', color: '#ffaa00', materialType: 'resin' },
+        ]}
+        showSky={true}
+      />
 
-      <div style={{ position: 'relative' }}>
-        <DiceWithPhysics />
-        <div id="gui-container" />
-      </div>
+      <DiceWithPhysics />
     </div>
   );
 }

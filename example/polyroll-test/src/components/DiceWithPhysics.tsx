@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import { Physics } from '@react-three/rapier';
+import { Physics, RapierRigidBody } from '@react-three/rapier';
 import Dice from './Dice';
-import Ground from './Ground';
+import InvisibleShadowGround from './InvisibleShadowGround';
 import Walls from './Walls';
 import * as dat from 'dat.gui';
 import { DiceProps } from '../types/diceProps';
+// import FollowCamera from './FollowCamera.tsx';
+import { OrbitControls, Sky } from '@react-three/drei';
 
 export default function DiceWithPhysics() {
   const [diceConfig, setDiceConfig] = useState<DiceProps>({
@@ -22,6 +23,7 @@ export default function DiceWithPhysics() {
 
   const guiContainerRef = useRef<HTMLDivElement>(null);
   const [isCssReady, setIsCssReady] = useState(false);
+  const diceRef = useRef<RapierRigidBody>(null);
 
   useEffect(() => {
     const checkCSSLoaded = () => {
@@ -53,45 +55,54 @@ export default function DiceWithPhysics() {
       guiContainerRef.current.appendChild(gui.domElement);
     }
 
-    gui.add(diceConfig, 'radius', 0, 0.5, 0.01).onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, radius: v })),
-    );
-    gui.add(diceConfig, 'smoothness', 1, 10, 1).onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, smoothness: v })),
-    );
-    gui.add(diceConfig, 'bevelSegments', 0, 10, 1).onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, bevelSegments: v })),
-    );
-    gui.add(diceConfig, 'creaseAngle', 0, 1.57, 0.01).onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, creaseAngle: v })),
-    );
-    gui.add(diceConfig, 'roughness', 0, 1, 0.01).onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, roughness: v }))
-    );
-    gui.add(diceConfig, 'normalScale', 0, 2, 0.1).onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, normalScale: v }))
-    );
+    gui
+      .add(diceConfig, 'radius', 0, 0.5, 0.01)
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, radius: v })));
+    gui
+      .add(diceConfig, 'smoothness', 1, 10, 1)
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, smoothness: v })));
+    gui
+      .add(diceConfig, 'bevelSegments', 0, 10, 1)
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, bevelSegments: v })));
+    gui
+      .add(diceConfig, 'creaseAngle', 0, 1.57, 0.01)
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, creaseAngle: v })));
+    gui
+      .add(diceConfig, 'roughness', 0, 1, 0.01)
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, roughness: v })));
+    gui
+      .add(diceConfig, 'normalScale', 0, 2, 0.1)
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, normalScale: v })));
     gui
       .add(diceConfig, 'materialType', ['solid', 'glass', 'fuzzy', 'resin', 'toon'])
-      .onChange((v) =>
-        setDiceConfig((prev) => ({ ...prev, materialType: v })),
-      );
-    gui.addColor(diceConfig, 'color').onChange((v) =>
-      setDiceConfig((prev) => ({ ...prev, color: v }))
-    );
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, materialType: v })));
+    gui
+      .addColor(diceConfig, 'color')
+      .onChange((v) => setDiceConfig((prev) => ({ ...prev, color: v })));
 
     return () => gui.destroy(); // cleanup
   }, [isCssReady]);
 
-
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: 20,
+        backgroundColor: '#ffffff',
+        padding: '1rem',
+      }}
+    >
       <div>
-        <Canvas shadows
-                camera={{ position: [0, 10, 5], fov: 45 }}
-                style={{ width: 500, height: 500, backgroundColor: '#eef' }}>
-          <ambientLight intensity={1} />
+        <Canvas
+          shadows
+          camera={{ position: [0, 10, 5], fov: 45 }}
+          style={{ width: 500, height: 500, backgroundColor: 'transparent' }}
+          gl={{ alpha: true }}
+        >
+          <Sky />
 
+          <ambientLight intensity={1} />
           <directionalLight
             position={[5, 10, 5]}
             intensity={2}
@@ -111,12 +122,14 @@ export default function DiceWithPhysics() {
             castShadow={false}
             color="#ffffff"
           />
-          <OrbitControls />
+          <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+
           <Physics gravity={[0, -9.81, 0]}>
-            <Dice {...diceConfig} />
-            <Ground />
+            <Dice ref={diceRef} {...diceConfig} />
+            <InvisibleShadowGround />
             <Walls />
           </Physics>
+          {/*<FollowCamera targetRef={diceRef} />*/}
         </Canvas>
       </div>
       <div ref={guiContainerRef} />

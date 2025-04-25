@@ -1,1 +1,2 @@
-export { default as DiceD6 } from './components/DiceD6';
+import DiceScene from './components/DiceScene';
+export default DiceScene;
