@@ -16,6 +16,7 @@
     "prettier/prettier": "error",
     "react/react-in-jsx-scope": "off",
     "react/jsx-no-unknown-property": "off",
+    "react/no-unknown-property": "off",
     "quotes": ["error", "single"],
     "semi": ["error", "always"]
   },
