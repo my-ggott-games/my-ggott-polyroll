@@ -6,7 +6,7 @@ import InvisibleShadowGround from './InvisibleShadowGround';
 import Walls from './Walls';
 import * as dat from 'dat.gui';
 import { DiceProps } from '../types/diceProps';
-// import FollowCamera from './FollowCamera.tsx';
+import FollowCamera from './FollowCamera.tsx';
 import { OrbitControls, Sky } from '@react-three/drei';
 
 export default function DiceWithPhysics() {
@@ -21,9 +21,9 @@ export default function DiceWithPhysics() {
     normalScale: 1,
   });
 
-  const guiContainerRef = useRef<HTMLDivElement>(null);
+  const guiContainerRef = useRef<HTMLDivElement | null>(null);
   const [isCssReady, setIsCssReady] = useState(false);
-  const diceRef = useRef<RapierRigidBody>(null);
+  const diceRef = useRef<RapierRigidBody | null>(null);
 
   useEffect(() => {
     const checkCSSLoaded = () => {
@@ -51,8 +51,8 @@ export default function DiceWithPhysics() {
     gui.domElement.id = 'gui';
 
     if (guiContainerRef.current) {
-      guiContainerRef.current.innerHTML = '';
-      guiContainerRef.current.appendChild(gui.domElement);
+      guiContainerRef.current!.innerHTML = '';
+      guiContainerRef.current!.appendChild(gui.domElement);
     }
 
     gui
@@ -73,9 +73,6 @@ export default function DiceWithPhysics() {
     gui
       .add(diceConfig, 'normalScale', 0, 2, 0.1)
       .onChange((v) => setDiceConfig((prev) => ({ ...prev, normalScale: v })));
-    gui
-      .add(diceConfig, 'materialType', ['solid', 'glass', 'fuzzy', 'resin', 'toon'])
-      .onChange((v) => setDiceConfig((prev) => ({ ...prev, materialType: v })));
     gui
       .addColor(diceConfig, 'color')
       .onChange((v) => setDiceConfig((prev) => ({ ...prev, color: v })));
@@ -122,17 +119,17 @@ export default function DiceWithPhysics() {
             castShadow={false}
             color="#ffffff"
           />
-          <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+          {/*<OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />*/}
 
           <Physics gravity={[0, -9.81, 0]}>
             <Dice ref={diceRef} {...diceConfig} />
             <InvisibleShadowGround />
             <Walls />
           </Physics>
-          {/*<FollowCamera targetRef={diceRef} />*/}
+          <FollowCamera targetRef={diceRef} />
         </Canvas>
       </div>
-      <div ref={guiContainerRef} />
+      <div ref={(el) => (guiContainerRef.current = el)} />
     </div>
   );
 }

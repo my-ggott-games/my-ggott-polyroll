@@ -1,51 +1,41 @@
 import { Canvas } from '@react-three/fiber';
 import { Physics, RapierRigidBody } from '@react-three/rapier';
-import { Sky } from '@react-three/drei';
-import { useRef } from 'react';
+import { OrbitControls, Sky } from '@react-three/drei';
+import { useRef, useState } from 'react';
 
 import DiceD6 from './DiceD6';
-// import DiceD8 from './DiceD8'; // 미래 확장을 위한 placeholder
 import InvisibleShadowGround from './InvisibleShadowGround';
 import Walls from './Walls';
 import FollowCamera from './FollowCamera';
 
-type DiceType = 'd6' | 'd8' | 'd10' | 'd12' | 'd20';
+import { DiceConfig } from '../types/dice';
+import { DiceProps } from '../../example/polyroll-test/src/types/diceProps';
 
-export interface DiceConfig {
-  type: DiceType;
-  color: string;
-  materialType: 'solid' | 'glass' | 'resin' | 'fuzzy' | 'toon';
-}
+export default function DiceScene() {
+  const diceRef = useRef<RapierRigidBody | null>(null);
 
-interface DiceSceneProps {
-  diceList: DiceConfig[];
-  showSky?: boolean;
-}
+  // color / materialType 만 상태로 관리
+  const [config] = useState<DiceConfig>({
+    type: 'd6', // 나중에 다른 타입 고려할 수 있도록 남겨두자
+    color: '#ccccff',
+    materialType: 'solid',
+  });
 
-export default function DiceScene({ diceList, showSky = false }: DiceSceneProps) {
-  const diceRefs = useRef<RapierRigidBody[]>([]);
+  // 나머지 geometry·물성 기본값
+  const defaultGeometry: Omit<DiceProps, 'materialType' | 'color'> = {
+    radius: 0.05,
+    smoothness: 3,
+    bevelSegments: 1,
+    creaseAngle: 0.4,
+    roughness: 1,
+    normalScale: 1,
+  };
 
-  const renderDice = (dice: DiceConfig, index: number) => {
-    const startPosition: [number, number, number] = [index * 2, 1.1, 0];
-
-    const commonProps = {
-      ref: (el: RapierRigidBody | null) => {
-        diceRefs.current[index] = el!;
-      },
-      color: dice.color,
-      materialType: dice.materialType,
-      startPosition,
-    };
-
-    switch (dice.type) {
-      case 'd6':
-        return <DiceD6 key={index} {...commonProps} />;
-      /*case 'd8':
-        return <DiceD8 key={index} {...commonProps} />;*/
-      // 추후 d10, d12 등 확장 가능
-      default:
-        return null;
-    }
+  // DiceD6 에 실제 넘길 props
+  const diceProps: DiceProps = {
+    ...defaultGeometry,
+    materialType: config.materialType,
+    color: config.color,
   };
 
   return (
@@ -55,12 +45,12 @@ export default function DiceScene({ diceList, showSky = false }: DiceSceneProps)
       style={{ width: 500, height: 500, backgroundColor: 'transparent' }}
       gl={{ alpha: true }}
     >
-      {showSky && <Sky sunPosition={[10, 20, 10]} inclination={0.45} azimuth={0.25} />}
+      <Sky />
       <ambientLight intensity={1} />
       <directionalLight
         position={[5, 10, 5]}
         intensity={2}
-        castShadow={true}
+        castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-near={1}
@@ -72,14 +62,15 @@ export default function DiceScene({ diceList, showSky = false }: DiceSceneProps)
       />
       <directionalLight position={[-5, 5, -5]} intensity={0.9} castShadow={false} color="#ffffff" />
 
+      <OrbitControls enablePan enableZoom enableRotate />
+
       <Physics gravity={[0, -9.81, 0]}>
-        {diceList.map((dice, i) => renderDice(dice, i))}
+        <DiceD6 ref={diceRef} {...diceProps} />
         <InvisibleShadowGround />
         <Walls />
       </Physics>
 
-      {/* 대표 주사위만 카메라가 추적 (첫 번째) */}
-      {diceRefs.current[0] && <FollowCamera targetRef={{ current: diceRefs.current[0] }} />}
+      <FollowCamera targetRef={diceRef} />
     </Canvas>
   );
 }

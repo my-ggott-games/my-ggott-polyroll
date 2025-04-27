@@ -5,6 +5,5 @@ export interface DiceProps {
   creaseAngle: number;
   materialType: 'solid' | 'glass' | 'resin' | 'toon';
   color: string;
-  roughness: number;
   normalScale: number;
 }

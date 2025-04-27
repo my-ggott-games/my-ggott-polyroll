@@ -98,15 +98,6 @@ const Dice = forwardRef<RapierRigidBody, DiceProps>(function Dice(
           attenuationDistance: 0.2,
           attenuationColor: new THREE.Color('#ffcccc'),
         };
-      case 'fuzzy':
-        return {
-          roughness: roughness,
-          metalness: 0,
-          clearcoat: 0,
-          normalMap: noiseTexture,
-          roughnessMap: noiseTexture,
-          normalScale: new THREE.Vector2(normalScale, normalScale),
-        };
       case 'solid':
       default:
         return {
