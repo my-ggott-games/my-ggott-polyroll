@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import DiceD6 from './DiceD6';
 import InvisibleShadowGround from './InvisibleShadowGround';
 import Walls from './Walls';
-import FollowCamera from './FollowCamera';
+// import FollowCamera from './FollowCamera';
 
 import { DiceConfig } from '../types/dice';
 import { DiceProps } from '../../example/polyroll-test/src/types/diceProps';
@@ -50,7 +50,7 @@ export default function DiceScene() {
       <directionalLight
         position={[5, 10, 5]}
         intensity={2}
-        castShadow
+        castShadow={true}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-near={1}
@@ -70,7 +70,9 @@ export default function DiceScene() {
         <Walls />
       </Physics>
 
+      {/*
       <FollowCamera targetRef={diceRef} />
+*/}
     </Canvas>
   );
 }

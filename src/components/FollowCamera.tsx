@@ -1,8 +1,9 @@
+/*
 import { useThree, useFrame } from '@react-three/fiber';
 import React, { useRef, useEffect } from 'react';
 import { RapierRigidBody } from '@react-three/rapier';
 import { OrbitControls as DreiOrbitControls } from '@react-three/drei';
-import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls';
+import type { OrbitControls } from 'three-stdlib/controls/OrbitControls';
 import * as THREE from 'three';
 
 interface CameraFollowerProps {
@@ -11,9 +12,9 @@ interface CameraFollowerProps {
 
 export default function FollowCamera({ targetRef }: CameraFollowerProps) {
   const { scene } = useThree();
-  const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
   const goal = useRef<THREE.Object3D>(new THREE.Object3D());
-
+dl
   useEffect(() => {
     scene.add(goal.current);
     return () => {
@@ -31,9 +32,7 @@ export default function FollowCamera({ targetRef }: CameraFollowerProps) {
 
   return (
     <DreiOrbitControls
-      ref={(instance: OrbitControlsImpl | null) => {
-        controlsRef.current = instance;
-      }}
+      ref={controlsRef}
       enablePan={false}
       enableZoom
       enableRotate
@@ -42,3 +41,4 @@ export default function FollowCamera({ targetRef }: CameraFollowerProps) {
     />
   );
 }
+*/

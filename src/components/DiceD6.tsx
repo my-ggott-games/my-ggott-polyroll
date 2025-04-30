@@ -37,23 +37,23 @@ const DiceD6 = forwardRef<RapierRigidBody, DiceProps>(function DiceD6(
 
   const [canClick, setCanClick] = useState(true);
   const localRef = useRef<RapierRigidBody | null>(null);
-  const diceBody = (ref as React.MutableRefObject<RapierRigidBody | null>) ?? localRef;
+  const diceBody = (ref as React.RefObject<RapierRigidBody>) ?? localRef;
 
   const handleClick = () => {
     if (!canClick) return;
     const body = diceBody.current!;
+    const torque = getRandomTorque(4); // ±4 범위
     body.setLinvel({ x: 0, y: 0, z: 0 }, true);
     body.setAngvel({ x: 0, y: 0, z: 0 }, true);
     body.applyImpulse({ x: 0, y: 6 + Math.random() * 2, z: -2 }, true);
-    body.applyTorqueImpulse(
-      {
-        x: Math.random() * 2 - 1,
-        y: Math.random() * 2 - 1,
-        z: Math.random() * 2 - 1,
-      },
-      true
-    );
+    body.applyTorqueImpulse(torque, true);
   };
+
+  const getRandomTorque = (range: number = 4) => ({
+    x: Math.random() * range * 2 - range,
+    y: Math.random() * range * 2 - range,
+    z: Math.random() * range * 2 - range,
+  });
 
   const getMaterialProps = () => {
     switch (materialType) {

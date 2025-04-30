@@ -1,7 +1,9 @@
+/*
 import { useThree, useFrame } from '@react-three/fiber';
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { RapierRigidBody } from '@react-three/rapier';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls as DreiOrbitControls } from '@react-three/drei';
+import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls';
 import * as THREE from 'three';
 
 interface CameraFollowerProps {
@@ -10,39 +12,32 @@ interface CameraFollowerProps {
 
 export default function FollowCamera({ targetRef }: CameraFollowerProps) {
   const { scene } = useThree();
-  const controlsRef = useRef<OrbitControls | null>(null);
-  const goal = useRef<THREE.Object3D>(new THREE.Object3D());
+  // OrbitControlsImpl의 인스턴스 타입을 뽑아서 ref 타입으로 사용
+  const controlsRef = useRef<InstanceType<typeof OrbitControlsImpl> | null>(null);
+  const goal = useRef(new THREE.Object3D());
 
   useEffect(() => {
     scene.add(goal.current);
-    return () => {
-      scene.remove(goal.current);
-    };
+    return () => void scene.remove(goal.current);
   }, [scene]);
 
   useFrame(() => {
-    const target = targetRef.current;
-    if (!target) return;
-
-    const pos = target.translation();
-    const targetVec = new THREE.Vector3(pos.x, pos.y, pos.z);
-
-    // goal을 부드럽게 target으로 이동시킴
-    goal.current.position.lerp(targetVec, 0.1);
-
-    if (controlsRef.current) {
-      controlsRef.current.target.copy(goal.current.position);
-    }
+    const body = targetRef.current;
+    if (!body) return;
+    const { x, y, z } = body.translation();
+    goal.current.position.lerp(new THREE.Vector3(x, y, z), 0.1);
+    controlsRef.current?.target.copy(goal.current.position);
   });
 
   return (
-    <OrbitControls
+    <DreiOrbitControls
       ref={controlsRef}
       enablePan={false}
-      enableZoom={true}
-      enableRotate={true}
+      enableZoom
+      enableRotate
       minDistance={5}
       maxDistance={10}
     />
   );
 }
+*/

@@ -6,8 +6,10 @@ import InvisibleShadowGround from './InvisibleShadowGround';
 import Walls from './Walls';
 import * as dat from 'dat.gui';
 import { DiceProps } from '../types/diceProps';
+/*
 import FollowCamera from './FollowCamera.tsx';
-import { OrbitControls, Sky } from '@react-three/drei';
+*/
+import { Sky } from '@react-three/drei';
 
 export default function DiceWithPhysics() {
   const [diceConfig, setDiceConfig] = useState<DiceProps>({
@@ -126,10 +128,12 @@ export default function DiceWithPhysics() {
             <InvisibleShadowGround />
             <Walls />
           </Physics>
+{/*
           <FollowCamera targetRef={diceRef} />
+*/}
         </Canvas>
       </div>
-      <div ref={(el) => (guiContainerRef.current = el)} />
+      <div ref={guiContainerRef} />
     </div>
   );
 }

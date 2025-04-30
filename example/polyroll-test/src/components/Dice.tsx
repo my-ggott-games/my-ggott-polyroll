@@ -33,7 +33,7 @@ function getTopFace(body: RapierRigidBody): number {
 }
 
 const Dice = forwardRef<RapierRigidBody, DiceProps>(function Dice(
-  { radius, smoothness, bevelSegments, creaseAngle, materialType, color, roughness, normalScale },
+  { radius, smoothness, bevelSegments, creaseAngle, materialType, color },
   ref
 ) {
   const [canClick, setCanClick] = useState(true);
@@ -156,7 +156,7 @@ const Dice = forwardRef<RapierRigidBody, DiceProps>(function Dice(
 
         {materialType === 'toon' && (
           <lineSegments geometry={outlineGeometry}>
-            <lineBasicMaterial color="black" depthTest depthWrite />
+            <lineBasicMaterial color="black" depthTest={true} depthWrite={true} />
           </lineSegments>
         )}
       </mesh>

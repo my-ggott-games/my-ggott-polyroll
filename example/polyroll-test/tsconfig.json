@@ -1,4 +1,12 @@
 {
+ "compilerOptions": {
+   "baseUrl": ".",
+   "paths": {
+     "three-stdlib/*": [
+       "../../node_modules/three-stdlib/*"
+     ]
+   }
+ },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
