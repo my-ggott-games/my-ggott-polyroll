@@ -44,9 +44,9 @@ Canvas 기반의 렌더링, 물리엔진, 그리고 다양한 주사위 타입 �
 ## 💡 참고 명령어
 
 ```bash
-npm run lint            # ESLint 실행
-npm run build           # 라이브러리 빌드(tsup)
-npm run prepare         # Husky 초기화
+pnpm lint               # ESLint 실행
+pnpm build              # 라이브러리 빌드(tsup)
+pnpm prepare            # Husky 초기화
 ```
 
 ## 📦 설치 예정 기능
